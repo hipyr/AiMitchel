@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "cleverbot": "^1.0.1",
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.4",
+    "openai": "^4.53.2"
+  }
+}
