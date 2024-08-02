@@ -1,7 +1,8 @@
 require('dotenv').config();
 const OpenAI = require('openai');
 const { Client, IntentsBitField, ActivityType } = require('discord.js');
-const openai = new OpenAI({apiKey: 'sk-proj-tWfLOlcUqPdTeG7XdkqnT3BlbkFJM4WyGPBaKHUQ3CpSwW3x'});
+const openai = new OpenAI({apiKey: process.env.API_KEY});
+
 let isMitchelOn = true;
 
 const threadMap = {};
@@ -14,7 +15,6 @@ const getOpenAiThreadId = (discordThreadId) => {
 const addThreadToMap = (discordThreadId, openAiThreadId) => {
     threadMap[discordThreadId] = openAiThreadId;
 }
-
 const terminalStates = ["cancelled", "failed", "completed", "expired"];
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const statusCheckLoop = async (openAiThreadId, runId) => {
@@ -43,9 +43,10 @@ const client = new Client({
 
 client.on('ready', (c) => {
     console.log("Ai Mitchel is on and working");
+
     client.user.setActivity({
-        name: 'Gooning to Sailor Moon',
-        type: ActivityType.Competing
+        name: 'Start my responses by saying Hey Mitchel',
+        type: ActivityType.Listening
     });
 });
 
@@ -83,7 +84,7 @@ client.on("messageCreate", async (message) => {
         );
         const run = await openai.beta.threads.runs.create(
             openAiThreadId,
-            {assistant_id: 'asst_RVub4n2Wr143zIoyqJzxWRWt'}
+            {assistant_id: process.env.ASSISTANT}
         )
         await statusCheckLoop(openAiThreadId, run.id || run.runId);
 
@@ -92,7 +93,8 @@ client.on("messageCreate", async (message) => {
         const aiResponse = messages.data[0].content[0].text.value;
 
         message.reply(aiResponse);
+        console.log(aiResponse);
     }
 });
 
-client.login('MTI2NjQ0NzE1ODQ3MTgyMzM4Mg.GHoX0j.GbnR3KeGg_iZUDwlce8GMxVdfV3xBSkf6AFM30');
+client.login(process.env.TOKEN);
