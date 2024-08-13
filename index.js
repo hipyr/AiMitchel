@@ -1,8 +1,8 @@
 require('dotenv').config();
 const OpenAI = require('openai');
 const { Client, IntentsBitField, ActivityType } = require('discord.js');
-const openai = new OpenAI({apiKey: process.env.OpenAI});
-
+const openai = new OpenAI({apiKey: process.env.OPENAI});
+isRunning = false;
 let isMitchelOn = true;
 
 const threadMap = {};
@@ -65,8 +65,9 @@ client.on('interactionCreate', async (interaction) => {
 
 client.on("messageCreate", async (message) => {
     if (message.author.bot || !message.content || message.content === '') return;
-    if (message.content.toLowerCase().includes('hey mitchel')) {
+    if (message.content.toLowerCase().includes('hey mitchel') && isMitchelOn && isRunning == false) {
         const discordThreadId = message.channel.id;
+        isRunning = true;
         let openAiThreadId = threadMap[discordThreadId];
         if(!openAiThreadId){
             const thread = await openai.beta.threads.create();
@@ -84,14 +85,14 @@ client.on("messageCreate", async (message) => {
         );
         const run = await openai.beta.threads.runs.create(
             openAiThreadId,
-            {assistant_id: asst_RVub4n2Wr143zIoyqJzxWRWt}
+            {assistant_id: 'asst_RVub4n2Wr143zIoyqJzxWRWt'}
         )
         await statusCheckLoop(openAiThreadId, run.id || run.runId);
 
 
         const messages = await openai.beta.threads.messages.list(openAiThreadId);
         const aiResponse = messages.data[0].content[0].text.value;
-
+        isRunning = false;
         message.reply(aiResponse);
         console.log(aiResponse);
     }
