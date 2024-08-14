@@ -96,16 +96,16 @@ client.on("messageCreate", async (message) => {
         const messages = await openai.beta.threads.messages.list(openAiThreadId);
         const aiResponse = messages.data[0].content[0].text.value;
         // the file writing system to save the response to a file
-        fs.writeFile('response.json', JSON.stringify(aiResponse), (err) => err && console.error(err));
-        const spawn = require("child_process").spawn;
-        const pythonProcess = spawn('python', ["./texttospeech.py"]);
-        pythonProcess.stdout.on('data', (data) => {
-            console.log(`Python script output: ${data}`);
-        });
+        // fs.writeFile('response.json', JSON.stringify(aiResponse), (err) => err && console.error(err));
+        // const spawn = require("child_process").spawn;
+        // const pythonProcess = spawn('python', ["./texttospeech.py"]);
+        // pythonProcess.stdout.on('data', (data) => {
+        //     console.log(`Python script output: ${data}`);
+        // });
 
-        pythonProcess.stderr.on('data', (data) => {
-            console.error(`Python script error: ${data}`);
-        });
+        // pythonProcess.stderr.on('data', (data) => {
+        //     console.error(`Python script error: ${data}`);
+        // });
         isRunning = false;
         message.reply(aiResponse);
     }
