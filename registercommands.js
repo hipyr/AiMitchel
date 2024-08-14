@@ -5,7 +5,7 @@ const commands = [
     {
         name: 'turnon',
         description: 'Turns on mitchel and will respond to anything with mitchel inside of the text'
-    }
+    },
 ]
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);

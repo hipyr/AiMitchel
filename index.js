@@ -1,5 +1,6 @@
 require('dotenv').config();
 const OpenAI = require('openai');
+const fs = require('fs');
 const { Client, IntentsBitField, ActivityType } = require('discord.js');
 const openai = new OpenAI({apiKey: process.env.OPENAI});
 let isMitchelOn = true;
@@ -10,6 +11,9 @@ const getOpenAiThreadId = (discordThreadId) => {
 
     return threadMap[discordThreadId];
 }
+
+
+
 
 const addThreadToMap = (discordThreadId, openAiThreadId) => {
     threadMap[discordThreadId] = openAiThreadId;
@@ -61,7 +65,6 @@ client.on('interactionCreate', async (interaction) => {
         }
     }
 });
-
 client.on("messageCreate", async (message) => {
     if (message.author.bot || !message.content || message.content === '') return;
     if (message.content.toLowerCase().includes('hey mitchel') && isMitchelOn && isRunning == false) {
@@ -89,13 +92,21 @@ client.on("messageCreate", async (message) => {
         await statusCheckLoop(openAiThreadId, run.id || run.runId);
         const messages = await openai.beta.threads.messages.list(openAiThreadId);
         const aiResponse = messages.data[0].content[0].text.value;
+        // the file writing system to save the response to a file
+        // fs.writeFile('response.json', JSON.stringify(aiResponse), (err) => err && console.error(err));
+        // const spawn = require("child_process").spawn;
+        // const pythonProcess = spawn('python', ["./texttospeech.py"]);
+        // pythonProcess.stdout.on('data', (data) => {
+        //     console.log(`Python script output: ${data}`);
+        // });
 
 
 
         isRunning = false;
         message.reply(aiResponse);
-        console.log(aiResponse);
     }
+
 });
+
 
 client.login(process.env.TOKEN);
