@@ -2,7 +2,6 @@ require('dotenv').config();
 const OpenAI = require('openai');
 const { Client, IntentsBitField, ActivityType } = require('discord.js');
 const openai = new OpenAI({apiKey: process.env.OPENAI});
-isRunning = false;
 let isMitchelOn = true;
 
 const threadMap = {};
@@ -88,10 +87,11 @@ client.on("messageCreate", async (message) => {
             {assistant_id: 'asst_RVub4n2Wr143zIoyqJzxWRWt'}
         )
         await statusCheckLoop(openAiThreadId, run.id || run.runId);
-
-
         const messages = await openai.beta.threads.messages.list(openAiThreadId);
         const aiResponse = messages.data[0].content[0].text.value;
+
+
+
         isRunning = false;
         message.reply(aiResponse);
         console.log(aiResponse);
