@@ -4,7 +4,7 @@ const fs = require('fs');
 const { Client, IntentsBitField, ActivityType } = require('discord.js');
 const openai = new OpenAI({apiKey: process.env.OPENAI});
 let isMitchelOn = true;
-
+// testing to see if pushes are being caught to the auto updater.
 const threadMap = {};
 
 const getOpenAiThreadId = (discordThreadId) => {
